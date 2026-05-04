@@ -133,13 +133,13 @@ Login → arrivée sur dashboard avec layout. Déconnexion → retour à login. 
 
 ### Tâches
 
-- [ ] Créer `src/routes/AdminCustomerNew.jsx` : formulaire nom + téléphone
-- [ ] Au submit : INSERT dans customers, récupérer l'access_token généré, afficher le lien complet `https://[domaine]/carte/[access_token]`
-- [ ] Bouton "Copier le lien" qui utilise `navigator.clipboard.writeText`
-- [ ] Bouton "Envoyer par WhatsApp" qui ouvre `https://wa.me/?text=[lien encodé]`
-- [ ] Gérer l'erreur de doublon de téléphone (contrainte UNIQUE) avec message clair
-- [ ] Ajouter un lien vers cette page depuis le dashboard
-- [ ] Lister les derniers clients inscrits sur le dashboard (limit 5, dernière inscription en haut)
+- [x] Créer `src/routes/AdminCustomerNew.jsx` : formulaire nom + téléphone
+- [x] Au submit : INSERT dans customers, récupérer l'access_token généré, afficher le lien complet `https://[domaine]/carte/[access_token]`
+- [x] Bouton "Copier le lien" qui utilise `navigator.clipboard.writeText`
+- [x] Bouton "Envoyer par WhatsApp" qui ouvre `https://wa.me/?text=[lien encodé]`
+- [x] Gérer l'erreur de doublon de téléphone (contrainte UNIQUE) avec message clair
+- [x] Ajouter un lien vers cette page depuis le dashboard
+- [x] Lister les derniers clients inscrits sur le dashboard (limit 5, dernière inscription en haut)
 
 ### Critère de validation
 

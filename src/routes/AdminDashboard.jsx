@@ -5,8 +5,8 @@ import { supabase } from '../lib/supabase'
 
 const NAV_ITEMS = [
   { label: 'Tableau de bord', path: '/admin', icon: 'home' },
+  { label: 'Nouveau client', path: '/admin/customers/new', icon: 'user-plus' },
   // Les items suivants seront ajoutes dans les phases futures
-  // { label: 'Nouveau client', path: '/admin/customers/new', icon: 'user-plus' },
   // { label: 'Enregistrer un achat', path: '/admin/purchase', icon: 'shopping-cart' },
   // { label: 'Valider un bon', path: '/admin/voucher', icon: 'ticket' },
   // { label: 'Campagnes', path: '/admin/campaigns', icon: 'megaphone' },
@@ -32,7 +32,10 @@ function NavIcon({ name, className = 'w-5 h-5' }) {
 export default function AdminDashboard() {
   const [user, setUser] = useState(null)
   const [shopName, setShopName] = useState('...')
+  const [shopId, setShopId] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [recentCustomers, setRecentCustomers] = useState([])
+  const [loadingCustomers, setLoadingCustomers] = useState(true)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -41,11 +44,30 @@ export default function AdminDashboard() {
       if (session) setUser(session.user)
     })
     // Charger le nom de la boutique
-    supabase.from('shops').select('shop_name').limit(1).single()
+    supabase.from('shops').select('id, shop_name').limit(1).single()
       .then(({ data }) => {
-        if (data) setShopName(data.shop_name)
+        if (data) {
+          setShopName(data.shop_name)
+          setShopId(data.id)
+        }
       })
   }, [])
+
+  // Charger les 5 derniers clients quand on a le shop_id
+  useEffect(() => {
+    if (!shopId) return
+    setLoadingCustomers(true)
+    supabase
+      .from('customers')
+      .select('id, name, phone, created_at, access_token')
+      .eq('shop_id', shopId)
+      .order('created_at', { ascending: false })
+      .limit(5)
+      .then(({ data, error }) => {
+        if (!error && data) setRecentCustomers(data)
+        setLoadingCustomers(false)
+      })
+  }, [shopId])
 
   async function handleSignOut() {
     await signOut()
@@ -137,14 +159,106 @@ export default function AdminDashboard() {
         {/* Page content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
           {location.pathname === '/admin' ? (
-            <div className="max-w-4xl">
-              <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Bienvenue sur Fidelys
-                </h3>
-                <p className="text-gray-500">
-                  Gerez la fidelite de vos clients depuis cet espace. Les fonctionnalites apparaitront au fur et a mesure du developpement.
-                </p>
+            <div className="max-w-4xl space-y-6">
+              {/* Carte de bienvenue + action rapide */}
+              <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-6 shadow-md shadow-primary-500/20 text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-1">
+                      Bienvenue sur Fidelys
+                    </h3>
+                    <p className="text-primary-100 text-sm">
+                      Gerez la fidelite de vos clients depuis cet espace.
+                    </p>
+                  </div>
+                  <Link
+                    to="/admin/customers/new"
+                    className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-sm font-medium transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Nouveau client
+                  </Link>
+                </div>
+              </div>
+
+              {/* Bouton mobile */}
+              <Link
+                to="/admin/customers/new"
+                className="sm:hidden flex items-center justify-center gap-2 w-full py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all shadow-md shadow-primary-500/25"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Inscrire un nouveau client
+              </Link>
+
+              {/* Derniers clients inscrits */}
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                  <h4 className="font-semibold text-gray-900">Derniers clients inscrits</h4>
+                  <span className="text-xs text-gray-400">{recentCustomers.length} dernier{recentCustomers.length > 1 ? 's' : ''}</span>
+                </div>
+
+                {loadingCustomers ? (
+                  <div className="p-6 flex items-center justify-center">
+                    <svg className="animate-spin w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  </div>
+                ) : recentCustomers.length === 0 ? (
+                  <div className="p-6 text-center">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm text-gray-500">Aucun client inscrit pour l'instant.</p>
+                    <Link
+                      to="/admin/customers/new"
+                      className="inline-block mt-3 text-sm text-primary-600 hover:text-primary-700 font-medium"
+                    >
+                      Inscrire votre premier client
+                    </Link>
+                  </div>
+                ) : (
+                  <ul className="divide-y divide-gray-100">
+                    {recentCustomers.map((c) => (
+                      <li key={c.id} className="px-6 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-full bg-primary-50 flex items-center justify-center shrink-0">
+                            <span className="text-sm font-semibold text-primary-600">
+                              {c.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">{c.name}</p>
+                            <p className="text-xs text-gray-500">{c.phone}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0 ml-3">
+                          <span className="text-xs text-gray-400 hidden sm:block">
+                            {new Date(c.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                          </span>
+                          <button
+                            onClick={() => {
+                              const link = `${window.location.origin}/carte/${c.access_token}`
+                              navigator.clipboard.writeText(link).catch(() => {})
+                            }}
+                            title="Copier le lien de la carte"
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 transition-all"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                            </svg>
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           ) : (
