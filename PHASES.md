@@ -104,18 +104,18 @@ Toutes les tables sont visibles dans Supabase, RLS est activé, le seed Chez Sé
 
 ### Pré-requis à demander
 
-- [ ] Email du compte vendeur initial (pour le seed Auth)
-- [ ] Mot de passe initial (à transmettre de façon sécurisée, l'utilisateur le créera dans Supabase Auth)
+- [x] Email du compte vendeur initial (pour le seed Auth)
+- [x] Mot de passe initial (à transmettre de façon sécurisée, l'utilisateur le créera dans Supabase Auth)
 
 ### Tâches
 
-- [ ] Créer le compte vendeur dans Supabase Auth via MCP ou dashboard
-- [ ] Créer `src/lib/auth.js` avec helpers signIn, signOut, getSession
-- [ ] Créer `src/routes/AdminLogin.jsx` : formulaire email/password, redirection vers `/admin` si succès
-- [ ] Créer `src/components/admin/ProtectedRoute.jsx` : wrapper qui vérifie la session, redirige vers `/admin/login` sinon
-- [ ] Créer `src/routes/AdminDashboard.jsx` : affiche "Tableau de bord Chez Sénan" + bouton Déconnexion + menu de navigation vide pour l'instant
-- [ ] Configurer React Router : `/`, `/admin/login`, `/admin/*` (toutes les sous-routes admin protégées)
-- [ ] Tester en local : login fonctionne, déconnexion fonctionne, accès direct à /admin sans session redirige
+- [x] Créer le compte vendeur dans Supabase Auth via MCP ou dashboard
+- [x] Créer `src/lib/auth.js` avec helpers signIn, signOut, getSession
+- [x] Créer `src/routes/AdminLogin.jsx` : formulaire email/password, redirection vers `/admin` si succès
+- [x] Créer `src/components/admin/ProtectedRoute.jsx` : wrapper qui vérifie la session, redirige vers `/admin/login` sinon
+- [x] Créer `src/routes/AdminDashboard.jsx` : affiche "Tableau de bord Chez Sénan" + bouton Déconnexion + menu de navigation vide pour l'instant
+- [x] Configurer React Router : `/`, `/admin/login`, `/admin/*` (toutes les sous-routes admin protégées)
+- [x] Tester en local : login fonctionne, déconnexion fonctionne, accès direct à /admin sans session redirige
 
 ### Critère de validation
 
