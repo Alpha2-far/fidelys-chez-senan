@@ -69,24 +69,24 @@ Le navigateur affiche "Fidélys Chez Sénan" sur l'URL Vercel.
 
 ### Pré-requis à demander
 
-- [ ] Confirmer qu'on crée la boutique "Chez Sénan" en seed initial
+- [x] Confirmer qu'on crée la boutique "Chez Sénan" en seed initial
 
 ### Tâches
 
-- [ ] Créer le dossier `supabase/migrations/`
-- [ ] Migration `0001_create_shops.sql` : table shops + seed Chez Sénan
-- [ ] Migration `0002_create_reward_config.sql` : table reward_config + seed pour Chez Sénan (500000, 50000, 150)
-- [ ] Migration `0003_create_customers.sql` : table customers avec access_token UUID, contrainte UNIQUE(shop_id, phone)
-- [ ] Migration `0004_create_vouchers.sql` : table vouchers avec colonne générée amount_remaining
-- [ ] Migration `0005_create_transactions.sql` : table transactions
-- [ ] Migration `0006_create_notification_log.sql`
-- [ ] Migration `0007_create_campaigns.sql`
-- [ ] Migration `0008_enable_rls.sql` : RLS activé sur toutes les tables
-- [ ] Migration `0009_rls_policies.sql` : politiques de base
+- [x] Créer le dossier `supabase/migrations/`
+- [x] Migration `0001_create_shops.sql` : table shops + seed Chez Sénan
+- [x] Migration `0002_create_reward_config.sql` : table reward_config + seed pour Chez Sénan (500000, 50000, 150)
+- [x] Migration `0003_create_customers.sql` : table customers avec access_token UUID, contrainte UNIQUE(shop_id, phone)
+- [x] Migration `0004_create_vouchers.sql` : table vouchers avec colonne générée amount_remaining
+- [x] Migration `0005_create_transactions.sql` : table transactions
+- [x] Migration `0006_create_notification_log.sql`
+- [x] Migration `0007_create_campaigns.sql`
+- [x] Migration `0008_enable_rls.sql` : RLS activé sur toutes les tables
+- [x] Migration `0009_rls_policies.sql` : politiques de base
   - customers : SELECT public si access_token correspond
   - tout le reste : auth.uid() requis avec shop_id matchant
-- [ ] Appliquer les migrations via MCP Supabase
-- [ ] Vérifier dans le dashboard Supabase que les tables sont créées et RLS est ON partout
+- [x] Appliquer les migrations via MCP Supabase
+- [x] Vérifier dans le dashboard Supabase que les tables sont créées et RLS est ON partout
 
 ### Critère de validation
 
