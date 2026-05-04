@@ -33,25 +33,25 @@
 
 ### Pré-requis à demander à l'utilisateur
 
-- [ ] Confirmer le nom du repo GitHub (proposer `fidelys-chez-senan`)
-- [ ] Confirmer que le projet Supabase existe et que le MCP est connecté
-- [ ] Récupérer l'URL et l'anon key Supabase
-- [ ] Récupérer le domaine Vercel (par défaut `fidelys-chez-senan.vercel.app`)
+- [x] Confirmer le nom du repo GitHub (proposer `fidelys-chez-senan`)
+- [x] Confirmer que le projet Supabase existe et que le MCP est connecté
+- [x] Récupérer l'URL et l'anon key Supabase
+- [x] Récupérer le domaine Vercel (par défaut `fidelys-chez-senan.vercel.app`)
 
 ### Tâches
 
-- [ ] Initialiser le projet Vite + React : `npm create vite@latest`
-- [ ] Installer Tailwind v3 selon la doc officielle Vite + Tailwind
-- [ ] Installer React Router v6
-- [ ] Installer @supabase/supabase-js
-- [ ] Configurer `tailwind.config.js` avec une couleur primary par défaut #C17A2B
-- [ ] Créer `src/lib/supabase.js` qui exporte un client Supabase configuré via VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY
-- [ ] Créer `.env.example` avec les variables documentées
-- [ ] Ajouter `.env.local` au `.gitignore`
-- [ ] Créer une route `/` qui affiche "Fidélys Chez Sénan"
-- [ ] Créer le repo GitHub via MCP, push initial sur main
-- [ ] Connecter le repo à Vercel, configurer les variables d'environnement
-- [ ] Vérifier que le deploy passe et que le site est accessible
+- [x] Initialiser le projet Vite + React : `npm create vite@latest`
+- [x] Installer Tailwind v3 selon la doc officielle Vite + Tailwind
+- [x] Installer React Router v6
+- [x] Installer @supabase/supabase-js
+- [x] Configurer `tailwind.config.js` avec une couleur primary par défaut #C17A2B
+- [x] Créer `src/lib/supabase.js` qui exporte un client Supabase configuré via VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY
+- [x] Créer `.env.example` avec les variables documentées
+- [x] Ajouter `.env.local` au `.gitignore`
+- [x] Créer une route `/` qui affiche "Fidélys Chez Sénan"
+- [x] Créer le repo GitHub via MCP, push initial sur main
+- [x] Connecter le repo à Vercel, configurer les variables d'environnement
+- [x] Vérifier que le deploy passe et que le site est accessible
 
 ### Critère de validation
 
