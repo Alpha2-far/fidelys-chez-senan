@@ -267,13 +267,15 @@ export default function AdminPurchase() {
               Montant de l'achat (FCFA)
             </label>
             <input
-              type="number"
+              type="tel"
               required
-              min="1"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              value={amount ? fmt(amount) : ''}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/\D/g, '');
+                setAmount(raw);
+              }}
               className="w-full px-4 py-4 text-2xl font-bold rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-500 outline-none text-gray-900"
-              placeholder="Ex: 50000"
+              placeholder="Ex: 50 000"
             />
             
             {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
