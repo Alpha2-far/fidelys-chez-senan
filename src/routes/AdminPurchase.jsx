@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Html5Qrcode } from 'html5-qrcode';
 
@@ -19,8 +19,6 @@ export default function AdminPurchase() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successResult, setSuccessResult] = useState(null);
   const [error, setError] = useState('');
-
-  const scannerRef = useRef(null);
 
   // Load reward config when a customer is selected
   useEffect(() => {
@@ -76,7 +74,7 @@ export default function AdminPurchase() {
               await html5QrCode.stop();
             }
             
-            const { data, error } = await supabase
+            const { data } = await supabase
               .from('customers')
               .select('*')
               .eq('access_token', accessToken)
@@ -88,14 +86,14 @@ export default function AdminPurchase() {
               setError('Client introuvable depuis ce QR code.');
               // We could potentially restart it here, but waiting for user action is safer
             }
-          } catch (e) {
+          } catch {
             setError('Erreur lors de la lecture du QR code.');
           }
         },
-        (errorMessage) => {
+        () => {
           // Ignore normal scan errors (no qr code found yet)
         }
-      ).catch((err) => {
+      ).catch(() => {
         setError("Impossible d'accéder à la caméra. Vérifiez les permissions.");
       });
     }

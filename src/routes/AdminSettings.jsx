@@ -16,10 +16,6 @@ export default function AdminSettings() {
   const [voucherAmount, setVoucherAmount] = useState(50000)
   const [voucherValidityDays, setVoucherValidityDays] = useState(150)
 
-  useEffect(() => {
-    fetchData()
-  }, [])
-
   async function fetchData() {
     try {
       // Load shop
@@ -28,9 +24,9 @@ export default function AdminSettings() {
         .select('*')
         .eq('slug', 'chez-senan')
         .single()
-      
+
       if (shopError) throw shopError
-      
+
       setShopId(shop.id)
       setShopName(shop.shop_name)
       setPrimaryColor(shop.primary_color || '#C17A2B')
@@ -41,9 +37,9 @@ export default function AdminSettings() {
         .select('*')
         .eq('shop_id', shop.id)
         .single()
-      
+
       if (configError) throw configError
-      
+
       setConfigId(config.id)
       setThresholdAmount(config.threshold_amount)
       setVoucherAmount(config.voucher_amount)
@@ -56,6 +52,10 @@ export default function AdminSettings() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   async function handleSave(e) {
     e.preventDefault()

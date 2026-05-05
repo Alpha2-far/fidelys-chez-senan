@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { signOut, getSession } from '../lib/auth'
 import { supabase } from '../lib/supabase'
@@ -30,7 +30,6 @@ function NavIcon({ name, className = 'w-5 h-5' }) {
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null)
-  const [shopName, setShopName] = useState('...')
   const [shopId, setShopId] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [recentCustomers, setRecentCustomers] = useState([])
@@ -46,13 +45,12 @@ export default function AdminDashboard() {
     supabase.from('shops').select('id, shop_name').limit(1).single()
       .then(({ data }) => {
         if (data) {
-          setShopName(data.shop_name)
           setShopId(data.id)
         }
       })
   }, [])
 
-  const loadCustomers = () => {
+  const loadCustomers = useCallback(() => {
     if (!shopId) return
     setLoadingCustomers(true)
     supabase
@@ -65,12 +63,11 @@ export default function AdminDashboard() {
         if (!error && data) setRecentCustomers(data)
         setLoadingCustomers(false)
       })
-  }
+  }, [shopId])
 
-  // Charger les 5 derniers clients quand on a le shop_id
   useEffect(() => {
     loadCustomers()
-  }, [shopId])
+  }, [loadCustomers])
 
   const handleDeleteCustomer = async (id, name) => {
     if (!window.confirm(`Êtes-vous sûr de vouloir supprimer le client ${name} ? Toutes ses données seront effacées (historique, bons). Cette action est irréversible.`)) {
