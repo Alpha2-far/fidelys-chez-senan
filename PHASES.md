@@ -314,11 +314,11 @@ Crédit d'un achat → notification reçue sur le téléphone du client. Génér
 
 ### Tâches
 
-- [ ] Créer `supabase/functions/send-reminders/index.ts`
-- [ ] Implémenter la logique R5 du PRD (rappels avec déduplication via notification_log)
-- [ ] Marquer les bons dont expires_at < now() en status = 'expired'
-- [ ] Configurer un cron Supabase pour appeler cette fonction tous les jours à 20h00 Africa/Porto-Novo
-- [ ] Tester en simulant des dates (modifier manuellement generated_at d'un bon de test)
+- [x] Créer `supabase/functions/send-reminders/index.ts`
+- [x] Implémenter la logique R5 du PRD (rappels avec déduplication via notification_log)
+- [x] Marquer les bons dont expires_at < now() en status = 'expired'
+- [x] Configurer un cron Supabase pour appeler cette fonction tous les jours à 20h00 Africa/Porto-Novo
+- [x] Tester en simulant des dates (modifier manuellement generated_at d'un bon de test)
 
 ### Critère de validation
 

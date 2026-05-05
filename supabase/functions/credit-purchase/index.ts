@@ -163,16 +163,28 @@ Deno.serve(async (req: Request) => {
             notifyPromises.push(webpush.sendNotification(customerData.push_subscription, payloadVoucher));
           }
 
+          const logsToInsert = [];
+          
+          if (notifyPromises.length > 0) {
+            logsToInsert.push({
+              customer_id,
+              type: 'purchase_credited'
+            });
+            
+            for (const v of newVouchers) {
+              logsToInsert.push({
+                customer_id,
+                type: 'voucher_generated',
+                voucher_id: v.id
+              });
+            }
+          }
+
           await Promise.allSettled(notifyPromises);
           
-          // Log notifications (simplified)
-          await supabaseClient.from('notification_log').insert({
-            customer_id,
-            shop_id,
-            title: 'Notifications automatiques d\'achat',
-            body: 'Push envoyé pour l\'achat et les bons potentiels',
-            status: 'sent'
-          });
+          if (logsToInsert.length > 0) {
+            await supabaseClient.from('notification_log').insert(logsToInsert);
+          }
         } catch (e) {
           console.error('Push error:', e);
         }
