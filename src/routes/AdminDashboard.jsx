@@ -90,11 +90,9 @@ export default function AdminDashboard() {
           {/* Header */}
           <div className="p-5 border-b border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-sm">
-                <span className="text-white font-bold text-sm">F</span>
-              </div>
+              <img src="/pwa-192x192.png" alt="Logo" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
               <div>
-                <p className="font-semibold text-gray-900 text-sm">{shopName}</p>
+                <p className="font-semibold text-gray-900 text-sm">CHEZ SENAN</p>
                 <p className="text-xs text-gray-500">Administration</p>
               </div>
             </div>
