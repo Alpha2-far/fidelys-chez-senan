@@ -111,6 +111,10 @@ export default function AdminPurchase() {
     e.preventDefault();
     if (!customer || !amount || isNaN(amount) || parseInt(amount) <= 0) return;
 
+    if (!window.confirm(`Confirmez-vous l'achat de ${fmt(amount)} FCFA pour ${customer.name} ?`)) {
+      return;
+    }
+
     setIsSubmitting(true);
     setError('');
     setSuccessResult(null);
