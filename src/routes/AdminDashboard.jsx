@@ -38,6 +38,7 @@ export default function AdminDashboard() {
   const [deleteConfirmId, setDeleteConfirmId] = useState(null)
   const [deleteError, setDeleteError] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
+  const [stats, setStats] = useState(null)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -53,6 +54,29 @@ export default function AdminDashboard() {
         }
       })
   }, [])
+
+  const loadStats = useCallback(() => {
+    if (!shopId) return
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString()
+    Promise.all([
+      supabase.from('customers').select('*', { count: 'exact', head: true }).eq('shop_id', shopId),
+      supabase.from('vouchers').select('*', { count: 'exact', head: true }).eq('shop_id', shopId).in('status', ['active', 'partially_used']),
+      supabase.from('vouchers').select('*', { count: 'exact', head: true }).eq('shop_id', shopId).eq('status', 'expired').gte('expires_at', startOfMonth).lte('expires_at', endOfMonth),
+      supabase.from('vouchers').select('amount_total').eq('shop_id', shopId)
+    ]).then(([clients, active, expired, allVouchers]) => {
+      const totalRewards = (allVouchers.data || []).reduce((sum, v) => sum + (v.amount_total || 0), 0)
+      setStats({
+        clients: clients.count || 0,
+        activeVouchers: active.count || 0,
+        expiredThisMonth: expired.count || 0,
+        totalRewards
+      })
+    })
+  }, [shopId])
+
+  useEffect(() => { loadStats() }, [loadStats])
 
   const loadCustomers = useCallback(() => {
     if (!shopId) return
@@ -219,6 +243,26 @@ export default function AdminDashboard() {
                     Nouveau client
                   </Link>
                 </div>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {[
+                  { label: 'Clients inscrits', value: stats?.clients ?? '...', color: 'text-primary-600', bg: 'bg-primary-50', icon: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z' },
+                  { label: 'Bons actifs', value: stats?.activeVouchers ?? '...', color: 'text-emerald-600', bg: 'bg-emerald-50', icon: 'M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z' },
+                  { label: 'Expirés ce mois', value: stats?.expiredThisMonth ?? '...', color: 'text-red-500', bg: 'bg-red-50', icon: 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z' },
+                  { label: 'Récompenses', value: stats ? `${(stats.totalRewards / 1000).toFixed(0)}k F` : '...', color: 'text-amber-600', bg: 'bg-amber-50', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+                ].map(s => (
+                  <div key={s.label} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+                    <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mb-3`}>
+                      <svg className={`w-4 h-4 ${s.color}`} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
+                      </svg>
+                    </div>
+                    <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
+                  </div>
+                ))}
               </div>
 
               {/* Bouton mobile */}

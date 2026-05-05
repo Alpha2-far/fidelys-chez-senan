@@ -62,6 +62,21 @@ function HomePage({ customer, shop, rewardConfig, vouchers, cardUrl, setTab }) {
   const shopName = shop?.shop_name || 'Chez Sena'
   const primaryColor = shop?.primary_color || '#C17A2B'
 
+  const justCompletedCycle = total > 0 && cycle === 0
+  const encouragementText = justCompletedCycle
+    ? <span>Bravo ! Nouveau cycle commence. Gardez votre rythme !</span>
+    : total === 0
+    ? <span>Faites votre premier achat pour commencer a cumuler !</span>
+    : pct >= 90
+    ? <span>Vous y etes presque ! Encore <span className="font-bold" style={{ color: primaryColor }}>{fmt(remain)} FCFA</span> et c&apos;est gagne !</span>
+    : pct >= 75
+    ? <span>Bientot ! Plus que <span className="font-bold" style={{ color: primaryColor }}>{fmt(remain)} FCFA</span> pour votre bon de {fmt(voucherAmt)} FCFA.</span>
+    : pct >= 50
+    ? <span>Plus de la moitie ! Encore <span className="font-bold" style={{ color: primaryColor }}>{fmt(remain)} FCFA</span> et vous decrochez un bon.</span>
+    : pct >= 25
+    ? <span>Bon depart ! Encore <span className="font-bold" style={{ color: primaryColor }}>{fmt(remain)} FCFA</span> pour votre bon de {fmt(voucherAmt)} FCFA !</span>
+    : <span>Encore <span className="font-bold" style={{ color: primaryColor }}>{fmt(remain)} FCFA</span> et vous debloquez un bon de {fmt(voucherAmt)} FCFA !</span>
+
   return (
     <div className="pb-24 flex-1 overflow-y-auto">
       {/* Header gradient */}
@@ -106,11 +121,8 @@ function HomePage({ customer, shop, rewardConfig, vouchers, cardUrl, setTab }) {
               <div className="h-2 bg-gray-200/50 rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}dd)` }} />
               </div>
-              <p className="text-[11px] text-gray-500 mt-2 text-center">
-                {pct === 0 ? "Commencez à cumuler dès aujourd'hui !" 
-                 : pct >= 90 ? <span>Vous y êtes presque ! Encore <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA et c'est gagné !</span>
-                 : pct >= 50 ? <span>Plus de la moitié ! Plus que <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA.</span>
-                 : <span>Encore <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA et vous débloquez un bon !</span>}
+              <p className="text-[12px] text-gray-700 font-medium mt-2.5 text-center leading-snug">
+                {encouragementText}
               </p>
             </div>
 
