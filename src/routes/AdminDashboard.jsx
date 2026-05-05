@@ -77,11 +77,18 @@ export default function AdminDashboard() {
       return
     }
     
-    const { error } = await supabase.from('customers').delete().eq('id', id)
-    if (error) {
-      alert("Erreur lors de la suppression.")
-    } else {
-      loadCustomers()
+    try {
+      const { error } = await supabase.from('customers').delete().eq('id', id)
+      if (error) {
+        console.error("Erreur détaillée lors de la suppression:", error)
+        alert(`Erreur lors de la suppression: ${error.message || error.details || JSON.stringify(error)}`)
+      } else {
+        loadCustomers()
+        alert('Client supprimé avec succès.')
+      }
+    } catch (err) {
+      console.error("Erreur inattendue:", err)
+      alert(`Erreur inattendue: ${err.message}`)
     }
   }
 
@@ -257,9 +264,33 @@ export default function AdminDashboard() {
                             {new Date(c.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                           </span>
                           <button
-                            onClick={() => {
+                            onClick={async () => {
                               const link = `${window.location.origin}/carte/${c.access_token}`
-                              navigator.clipboard.writeText(link).catch(() => {})
+                              if (navigator.clipboard && window.isSecureContext) {
+                                try {
+                                  await navigator.clipboard.writeText(link)
+                                  alert('Lien copié dans le presse-papier !')
+                                  return
+                                } catch (err) {
+                                  console.error('Failed to copy', err)
+                                }
+                              }
+                              // Fallback
+                              try {
+                                const textArea = document.createElement("textarea");
+                                textArea.value = link;
+                                textArea.style.position = "fixed";
+                                textArea.style.left = "-9999px";
+                                document.body.appendChild(textArea);
+                                textArea.focus();
+                                textArea.select();
+                                document.execCommand('copy');
+                                textArea.remove();
+                                alert('Lien copié dans le presse-papier !')
+                              } catch (e) {
+                                console.error('Fallback copy failed', e)
+                                alert(`Copiez manuellement ce lien : ${link}`)
+                              }
                             }}
                             title="Copier le lien de la carte"
                             className="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 transition-all"
