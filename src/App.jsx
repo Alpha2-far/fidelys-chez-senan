@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './routes/Home'
 import AdminLogin from './routes/AdminLogin'
 import AdminDashboard from './routes/AdminDashboard'
+import AdminCustomerNew from './routes/AdminCustomerNew'
+import ClientCard from './routes/ClientCard'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 
 function App() {
@@ -9,10 +11,13 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/carte/:accessToken" element={<ClientCard />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<ProtectedRoute />}>
-          <Route index element={<AdminDashboard />} />
-          {/* Les sous-routes admin seront ajoutees ici dans les phases suivantes */}
+          <Route element={<AdminDashboard />}>
+            <Route index element={null} />
+            <Route path="customers/new" element={<AdminCustomerNew />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
