@@ -38,14 +38,19 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
   const url = event.notification.data?.url || '/'
+  const isExternal = url.startsWith('http') && !url.startsWith(self.location.origin)
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      if (isExternal) {
+        return clients.openWindow(url)
+      }
       for (const client of windowClients) {
         if ('focus' in client) {
           return client.focus().then(() => client.navigate(url))
         }
       }
-      if (clients.openWindow) return clients.openWindow(url)
+      return clients.openWindow(url)
     })
   )
 })
