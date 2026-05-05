@@ -257,13 +257,13 @@ Le vendeur peut enregistrer un achat en moins de 30 secondes via QR ou télépho
 
 ### Tâches
 
-- [ ] Créer `src/routes/AdminVoucher.jsx`
-- [ ] Input code 6 caractères majuscules
-- [ ] À la saisie complète : SELECT voucher → afficher client, solde disponible, expiration
-- [ ] Input montant à utiliser (max = amount_remaining)
-- [ ] Bouton Valider → Edge Function validate-voucher
-- [ ] Afficher confirmation avec solde restant
-- [ ] Gérer toutes les erreurs : code invalide, bon expiré, montant trop élevé
+- [x] Créer `src/routes/AdminVoucher.jsx`
+- [x] Input code 6 caractères majuscules
+- [x] À la saisie complète : SELECT voucher → afficher client, solde disponible, expiration
+- [x] Input montant à utiliser (max = amount_remaining)
+- [x] Bouton Valider → Edge Function validate-voucher
+- [x] Afficher confirmation avec solde restant
+- [x] Gérer toutes les erreurs : code invalide, bon expiré, montant trop élevé
 
 ### Critère de validation
 
