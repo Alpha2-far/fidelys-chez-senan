@@ -16,16 +16,18 @@ function QRCanvas({ url }) {
   return <canvas ref={ref} className="mx-auto rounded-xl" />
 }
 
-function VoucherItem({ v }) {
+function VoucherItem({ v, shop }) {
   const [show, setShow] = useState(false)
   const t = useRef(null)
   const reveal = () => { setShow(true); clearTimeout(t.current); t.current = setTimeout(() => setShow(false), 10000) }
   useEffect(() => () => clearTimeout(t.current), [])
   const partial = v.status === 'partially_used'
   const days = daysLeft(v.expires_at)
+  const primaryColor = shop?.primary_color || '#C17A2B'
+  
   return (
     <div className="bg-white rounded-2xl shadow-sm shadow-primary-500/10 border border-primary-100 overflow-hidden">
-      <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #C17A2B, #E8A84C, #C17A2B)' }} />
+      <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${primaryColor}, #E8A84C, ${primaryColor})` }} />
       <div className="p-5">
         <div className="flex justify-between items-center mb-3">
           <span className={`text-[11px] font-bold px-3 py-1 rounded-full ${partial ? 'bg-amber-100 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
@@ -58,11 +60,12 @@ function HomePage({ customer, shop, rewardConfig, vouchers, cardUrl, setTab }) {
   const pct = Math.min(100, Math.round((cycle / threshold) * 100))
   const remain = threshold - cycle
   const shopName = shop?.shop_name || 'Chez Sena'
+  const primaryColor = shop?.primary_color || '#C17A2B'
 
   return (
     <div className="pb-24 flex-1 overflow-y-auto">
       {/* Header gradient */}
-      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #8B5A1B 0%, #C17A2B 50%, #D4943A 100%)' }}>
+      <div className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${primaryColor}dd 0%, ${primaryColor} 50%, ${primaryColor}ea 100%)` }}>
         <div className="absolute inset-0">
           <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-white/10" />
           <div className="absolute top-20 -left-10 w-32 h-32 rounded-full bg-white/5" />
@@ -101,7 +104,7 @@ function HomePage({ customer, shop, rewardConfig, vouchers, cardUrl, setTab }) {
                 <span className="text-primary-700 font-bold">{pct}%</span>
               </div>
               <div className="h-2 bg-gray-200/50 rounded-full overflow-hidden">
-                <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #C17A2B, #E8A84C)' }} />
+                <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}dd)` }} />
               </div>
               <p className="text-[11px] text-gray-500 mt-2 text-center">
                 Plus que <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA
@@ -148,7 +151,7 @@ function HomePage({ customer, shop, rewardConfig, vouchers, cardUrl, setTab }) {
             <h2 className="text-[14px] font-bold text-gray-900">Mes bons</h2>
             {vouchers.length > 1 && <button onClick={() => setTab('rewards')} className="text-[11px] text-primary-600 font-semibold">Tout voir</button>}
           </div>
-          <VoucherItem v={vouchers[0]} />
+          <VoucherItem v={vouchers[0]} shop={shop} />
         </div>
       )}
     </div>
@@ -189,7 +192,7 @@ function HistoryPage({ transactions, onBack }) {
   )
 }
 
-function RewardsPage({ vouchers, onBack }) {
+function RewardsPage({ vouchers, shop, onBack }) {
   return (
     <div className="flex-1 overflow-y-auto pb-24">
       <div className="bg-white px-5 pt-8 pb-4 flex items-center gap-3 border-b border-gray-100 sticky top-0 z-10 shadow-sm">
@@ -200,7 +203,7 @@ function RewardsPage({ vouchers, onBack }) {
       </div>
       <div className="p-4 space-y-4">
         {vouchers.length === 0 ? <p className="text-center text-gray-400 text-sm py-16">Aucun bon actif pour le moment.</p>
-          : vouchers.map(v => <VoucherItem key={v.id} v={v} />)}
+          : vouchers.map(v => <VoucherItem key={v.id} v={v} shop={shop} />)}
       </div>
     </div>
   )
@@ -281,7 +284,7 @@ export default function ClientCard() {
         {/* Content area */}
         {tab === 'home' && <HomePage customer={customer} shop={shop} rewardConfig={rewardConfig} vouchers={vouchers} cardUrl={cardUrl} setTab={setTab} />}
         {tab === 'history' && <HistoryPage transactions={transactions} onBack={() => setTab('home')} />}
-        {tab === 'rewards' && <RewardsPage vouchers={vouchers} onBack={() => setTab('home')} />}
+        {tab === 'rewards' && <RewardsPage vouchers={vouchers} shop={shop} onBack={() => setTab('home')} />}
 
         {/* Bottom nav */}
         <nav className="absolute bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">

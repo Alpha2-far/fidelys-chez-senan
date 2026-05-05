@@ -9,8 +9,7 @@ const NAV_ITEMS = [
   { label: 'Enregistrer un achat', path: '/admin/purchases', icon: 'shopping-cart' },
   { label: 'Valider un bon', path: '/admin/voucher', icon: 'ticket' },
   { label: 'Campagnes', path: '/admin/campaigns', icon: 'megaphone' },
-  // Les items suivants seront ajoutes dans les phases futures
-  // { label: 'Parametres', path: '/admin/settings', icon: 'settings' },
+  { label: 'Paramètres', path: '/admin/settings', icon: 'settings' },
 ]
 
 function NavIcon({ name, className = 'w-5 h-5' }) {

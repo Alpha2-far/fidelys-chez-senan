@@ -363,11 +363,11 @@ Envoi d'une campagne test → tous les clients abonnés reçoivent la notificati
 
 ### Tâches
 
-- [ ] Créer `src/routes/AdminSettings.jsx`
-- [ ] Charger shops + reward_config
-- [ ] Champs éditables : shop_name, primary_color (color picker), threshold_amount, voucher_amount, voucher_validity_days
-- [ ] Bouton Sauvegarder → UPDATE en DB
-- [ ] Vérifier que le changement de shop_name apparaît côté client après refresh
+- [x] Créer `src/routes/AdminSettings.jsx`
+- [x] Charger shops + reward_config
+- [x] Champs éditables : shop_name, primary_color (color picker), threshold_amount, voucher_amount, voucher_validity_days
+- [x] Bouton Sauvegarder → UPDATE en DB
+- [x] Vérifier que le changement de shop_name apparaît côté client après refresh
 
 ### Critère de validation
 

@@ -6,6 +6,7 @@ import AdminCustomerNew from './routes/AdminCustomerNew'
 import AdminPurchase from './routes/AdminPurchase'
 import AdminVoucher from './routes/AdminVoucher'
 import AdminCampaigns from './routes/AdminCampaigns'
+import AdminSettings from './routes/AdminSettings'
 import ClientCard from './routes/ClientCard'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="purchases" element={<AdminPurchase />} />
             <Route path="voucher" element={<AdminVoucher />} />
             <Route path="campaigns" element={<AdminCampaigns />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Route>
       </Routes>
