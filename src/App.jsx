@@ -3,6 +3,7 @@ import Home from './routes/Home'
 import AdminLogin from './routes/AdminLogin'
 import AdminDashboard from './routes/AdminDashboard'
 import AdminCustomerNew from './routes/AdminCustomerNew'
+import AdminPurchase from './routes/AdminPurchase'
 import ClientCard from './routes/ClientCard'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 
@@ -17,6 +18,7 @@ function App() {
           <Route element={<AdminDashboard />}>
             <Route index element={null} />
             <Route path="customers/new" element={<AdminCustomerNew />} />
+            <Route path="purchases" element={<AdminPurchase />} />
           </Route>
         </Route>
       </Routes>
