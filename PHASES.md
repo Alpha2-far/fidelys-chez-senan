@@ -157,20 +157,20 @@ Création d'un client → lien généré → cliquer sur le lien dans un nouvel 
 
 ### Tâches
 
-- [ ] Installer `qrcode` (npm)
-- [ ] Créer `src/routes/ClientCard.jsx`
-- [ ] Au mount : SELECT customer WHERE access_token = paramURL (politique RLS publique)
-- [ ] Si pas trouvé : afficher "Lien invalide"
-- [ ] Charger aussi le shop (shop_name, primary_color) et reward_config
-- [ ] Afficher : en-tête avec shop_name, nom du client, solde cumulé, barre de progression, texte d'encouragement, QR code (URL = lien complet de cette page)
-- [ ] Charger les bons actifs et partiellement utilisés du client, les afficher
+- [x] Installer `qrcode` (npm)
+- [x] Créer `src/routes/ClientCard.jsx`
+- [x] Au mount : SELECT customer WHERE access_token = paramURL (politique RLS publique)
+- [x] Si pas trouvé : afficher "Lien invalide"
+- [x] Charger aussi le shop (shop_name, primary_color) et reward_config
+- [x] Afficher : en-tête avec shop_name, nom du client, solde cumulé, barre de progression, texte d'encouragement, QR code (URL = lien complet de cette page)
+- [x] Charger les bons actifs et partiellement utilisés du client, les afficher
   - Code masqué par défaut (CSS `filter: blur(8px)`)
   - Bouton "Révéler" : retire le blur pendant 10 secondes (setTimeout)
   - Date d'expiration formatée
   - Si partiellement utilisé : "Solde restant X / Y FCFA"
-- [ ] Section "Historique" : bouton qui ouvre une modale ou une page dédiée listant les transactions
-- [ ] Configurer la PWA via vite-plugin-pwa (manifest minimal : nom, theme_color, icons placeholder)
-- [ ] Tester sur mobile : la PWA s'installe, l'icône apparaît sur l'écran d'accueil
+- [x] Section "Historique" : bouton qui ouvre une modale ou une page dédiée listant les transactions
+- [x] Configurer la PWA via vite-plugin-pwa (manifest minimal : nom, theme_color, icons placeholder)
+- [x] Tester sur mobile : la PWA s'installe, l'icône apparaît sur l'écran d'accueil
 
 ### Critère de validation
 
