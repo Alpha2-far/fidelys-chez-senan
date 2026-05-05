@@ -6,8 +6,8 @@ import { supabase } from '../lib/supabase'
 const NAV_ITEMS = [
   { label: 'Tableau de bord', path: '/admin', icon: 'home' },
   { label: 'Nouveau client', path: '/admin/customers/new', icon: 'user-plus' },
+  { label: 'Enregistrer un achat', path: '/admin/purchases', icon: 'shopping-cart' },
   // Les items suivants seront ajoutes dans les phases futures
-  // { label: 'Enregistrer un achat', path: '/admin/purchase', icon: 'shopping-cart' },
   // { label: 'Valider un bon', path: '/admin/voucher', icon: 'ticket' },
   // { label: 'Campagnes', path: '/admin/campaigns', icon: 'megaphone' },
   // { label: 'Parametres', path: '/admin/settings', icon: 'settings' },

@@ -230,16 +230,16 @@ Cliquer sur un lien client ouvre la carte avec toutes les infos correctes. Sur m
 
 ### Tâches
 
-- [ ] Installer `@zxing/browser` (ou html5-qrcode, choix du dev avec validation utilisateur)
-- [ ] Créer `src/routes/AdminPurchase.jsx`
-- [ ] Sélecteur de mode : "Scanner QR" / "Rechercher par téléphone"
-- [ ] Mode QR : ouvrir la caméra, lire le QR, extraire l'access_token de l'URL scannée, charger le customer correspondant
-- [ ] Mode téléphone : input avec recherche en temps réel dès 3 caractères, debounce 300ms
-- [ ] Une fois le client identifié : afficher nom + solde + progression
-- [ ] Input montant (FCFA, entier, > 0)
-- [ ] Bouton Valider → appelle l'Edge Function credit-purchase
-- [ ] Afficher confirmation : "Achat de X FCFA crédité, nouveau solde Y FCFA"
-- [ ] Si bon généré : afficher en plus "Un bon de Z FCFA a été généré, code ABCDEF"
+- [x] Installer `@zxing/browser` (ou html5-qrcode, choix du dev avec validation utilisateur)
+- [x] Créer `src/routes/AdminPurchase.jsx`
+- [x] Sélecteur de mode : "Scanner QR" / "Rechercher par téléphone"
+- [x] Mode QR : ouvrir la caméra, lire le QR, extraire l'access_token de l'URL scannée, charger le customer correspondant
+- [x] Mode téléphone : input avec recherche en temps réel dès 3 caractères, debounce 300ms
+- [x] Une fois le client identifié : afficher nom + solde + progression
+- [x] Input montant (FCFA, entier, > 0)
+- [x] Bouton Valider → appelle l'Edge Function credit-purchase
+- [x] Afficher confirmation : "Achat de X FCFA crédité, nouveau solde Y FCFA"
+- [x] Si bon généré : afficher en plus "Un bon de Z FCFA a été généré, code ABCDEF"
 
 ### Critère de validation
 
