@@ -69,17 +69,15 @@ function HomePage({ customer, shop, rewardConfig, vouchers, cardUrl, setTab }) {
           <div className="absolute bottom-0 right-10 w-20 h-20 rounded-full bg-black/5" />
         </div>
         <div className="relative px-5 pt-8 pb-20">
-          <div className="mb-4 flex items-center gap-2">
-            <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-            <h1 className="text-[28px] font-black text-white tracking-tight leading-none uppercase">{shopName}</h1>
+          <div className="mb-4">
+            <h1 className="text-[28px] font-black text-white tracking-tight leading-none uppercase">
+              {shopName.normalize("NFD").replace(/[\u0300-\u036f]/g, "")}
+            </h1>
           </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white/80 text-[13px] font-medium mb-0.5">Bienvenue,</p>
               <p className="text-[18px] font-bold text-white leading-tight">{customer.name}</p>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-sm">
-              <span className="text-white font-bold text-base">{customer.name.charAt(0)}</span>
             </div>
           </div>
         </div>

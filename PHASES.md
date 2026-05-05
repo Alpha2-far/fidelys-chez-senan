@@ -188,28 +188,28 @@ Cliquer sur un lien client ouvre la carte avec toutes les infos correctes. Sur m
 
 ### Pré-requis à demander
 
-- [ ] Confirmer que le CLI Supabase est installé localement (sinon les fonctions sont déployées via MCP)
+- [x] Confirmer que le CLI Supabase est installé localement (sinon les fonctions sont déployées via MCP)
 
 ### Tâches credit-purchase
 
-- [ ] Créer `supabase/functions/credit-purchase/index.ts`
-- [ ] Inputs : customer_id, shop_id, amount
-- [ ] Implémenter la logique R1 (génération de bons sur seuil) du PRD
-- [ ] Générer le code bon (6 caractères, regen sur collision)
-- [ ] Insérer la transaction
-- [ ] Retourner la liste des bons générés et le nouveau solde
-- [ ] Déployer via MCP Supabase
-- [ ] Tester avec un appel HTTP direct (curl ou Supabase dashboard)
+- [x] Créer `supabase/functions/credit-purchase/index.ts`
+- [x] Inputs : customer_id, shop_id, amount
+- [x] Implémenter la logique R1 (génération de bons sur seuil) du PRD
+- [x] Générer le code bon (6 caractères, regen sur collision)
+- [x] Insérer la transaction
+- [x] Retourner la liste des bons générés et le nouveau solde
+- [x] Déployer via MCP Supabase
+- [x] Tester avec un appel HTTP direct (curl ou Supabase dashboard)
 
 ### Tâches validate-voucher
 
-- [ ] Créer `supabase/functions/validate-voucher/index.ts`
-- [ ] Inputs : code, amount_to_use, shop_id
-- [ ] Vérifier existence, expiration, solde suffisant
-- [ ] Mettre à jour amount_used et status
-- [ ] Insérer la transaction de type voucher_use
-- [ ] Retourner success + amount_remaining ou error code
-- [ ] Déployer et tester
+- [x] Créer `supabase/functions/validate-voucher/index.ts`
+- [x] Inputs : code, amount_to_use, shop_id
+- [x] Vérifier existence, expiration, solde suffisant
+- [x] Mettre à jour amount_used et status
+- [x] Insérer la transaction de type voucher_use
+- [x] Retourner success + amount_remaining ou error code
+- [x] Déployer et tester
 
 ### Critère de validation
 
