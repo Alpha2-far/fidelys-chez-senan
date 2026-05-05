@@ -107,7 +107,10 @@ function HomePage({ customer, shop, rewardConfig, vouchers, cardUrl, setTab }) {
                 <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}dd)` }} />
               </div>
               <p className="text-[11px] text-gray-500 mt-2 text-center">
-                Plus que <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA
+                {pct === 0 ? "Commencez à cumuler dès aujourd'hui !" 
+                 : pct >= 90 ? <span>Vous y êtes presque ! Encore <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA et c'est gagné !</span>
+                 : pct >= 50 ? <span>Plus de la moitié ! Plus que <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA.</span>
+                 : <span>Encore <span className="font-bold text-primary-700">{fmt(remain)}</span> FCFA et vous débloquez un bon !</span>}
               </p>
             </div>
 
