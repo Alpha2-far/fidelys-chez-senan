@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 
 export default function AdminPurchase() {
-  const [mode, setMode] = useState('phone'); // 'qr' or 'phone'
+  const [mode, setMode] = useState('qr'); // 'qr' or 'phone'
   
   // Phone search state
   const [phoneSearch, setPhoneSearch] = useState('');
@@ -54,58 +54,57 @@ export default function AdminPurchase() {
 
   // QR Scanner logic
   useEffect(() => {
+    let html5QrCode;
+
     if (mode === 'qr' && !customer) {
-      const scanner = new Html5QrcodeScanner(
-        "reader", 
-        { 
-          fps: 10, 
-          qrbox: { width: 250, height: 250 },
-          formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ]
-        }, 
-        false
-      );
+      html5QrCode = new Html5Qrcode("reader");
       
-      scanner.render(async (decodedText) => {
-        // Extract access token from URL
-        // Example URL: https://domain/carte/1234-abcd...
-        try {
-          let accessToken = decodedText;
-          if (decodedText.includes('/carte/')) {
-            const parts = decodedText.split('/carte/');
-            accessToken = parts[1].split('/')[0].split('?')[0]; // basic cleanup
-          }
-          
-          scanner.pause(true); // Pause scanning while we check
-          
-          const { data, error } = await supabase
-            .from('customers')
-            .select('*')
-            .eq('access_token', accessToken)
-            .single();
+      html5QrCode.start(
+        { facingMode: "environment" }, 
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        async (decodedText) => {
+          // Extract access token from URL
+          try {
+            let accessToken = decodedText;
+            if (decodedText.includes('/carte/')) {
+              const parts = decodedText.split('/carte/');
+              accessToken = parts[1].split('/')[0].split('?')[0];
+            }
             
-          if (data) {
-            setCustomer(data);
-            scanner.clear();
-          } else {
-            setError('Client introuvable depuis ce QR code.');
-            setTimeout(() => scanner.resume(), 2000);
+            // Stop scanning once we got a code
+            if (html5QrCode.isScanning) {
+              await html5QrCode.stop();
+            }
+            
+            const { data, error } = await supabase
+              .from('customers')
+              .select('*')
+              .eq('access_token', accessToken)
+              .single();
+              
+            if (data) {
+              setCustomer(data);
+            } else {
+              setError('Client introuvable depuis ce QR code.');
+              // We could potentially restart it here, but waiting for user action is safer
+            }
+          } catch (e) {
+            setError('Erreur lors de la lecture du QR code.');
           }
-        } catch (e) {
-          setError('Erreur lors de la lecture du QR code.');
-          setTimeout(() => scanner.resume(), 2000);
+        },
+        (errorMessage) => {
+          // Ignore normal scan errors (no qr code found yet)
         }
-      }, (error) => {
-        // Ignore normal scan errors (no qr code found)
+      ).catch((err) => {
+        setError("Impossible d'accéder à la caméra. Vérifiez les permissions.");
       });
-      
-      scannerRef.current = scanner;
-      
-      return () => {
-        if (scannerRef.current) {
-          scannerRef.current.clear().catch(e => console.error(e));
-        }
-      };
     }
+
+    return () => {
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch(console.error);
+      }
+    };
   }, [mode, customer]);
 
   const handleSubmit = async (e) => {
