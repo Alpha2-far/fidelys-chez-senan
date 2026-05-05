@@ -336,16 +336,16 @@ Un bon avec generated_at = now() - 30 jours déclenche un rappel quand le cron t
 
 ### Tâches
 
-- [ ] Créer `supabase/functions/send-campaign/index.ts`
-- [ ] Inputs : campaign_id, shop_id
-- [ ] Charger tous les customers avec push_subscription non null pour ce shop
-- [ ] Envoyer le push à chacun, logger dans notification_log
-- [ ] Mettre à jour campaigns.sent_at
-- [ ] Créer `src/routes/AdminCampaigns.jsx`
-- [ ] Formulaire titre + corps + URL optionnelle
-- [ ] Aperçu de la notification
-- [ ] Bouton Envoyer (avec confirmation modale)
-- [ ] Tableau historique des campagnes envoyées (date, titre, body)
+- [x] Créer `supabase/functions/send-campaign/index.ts`
+- [x] Inputs : campaign_id, shop_id
+- [x] Charger tous les customers avec push_subscription non null pour ce shop
+- [x] Envoyer le push à chacun, logger dans notification_log
+- [x] Mettre à jour campaigns.sent_at
+- [x] Créer `src/routes/AdminCampaigns.jsx`
+- [x] Formulaire titre + corps + URL optionnelle
+- [x] Aperçu de la notification
+- [x] Bouton Envoyer (avec confirmation modale)
+- [x] Tableau historique des campagnes envoyées (date, titre, body)
 
 ### Critère de validation
 

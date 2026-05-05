@@ -8,8 +8,8 @@ const NAV_ITEMS = [
   { label: 'Nouveau client', path: '/admin/customers/new', icon: 'user-plus' },
   { label: 'Enregistrer un achat', path: '/admin/purchases', icon: 'shopping-cart' },
   { label: 'Valider un bon', path: '/admin/voucher', icon: 'ticket' },
+  { label: 'Campagnes', path: '/admin/campaigns', icon: 'megaphone' },
   // Les items suivants seront ajoutes dans les phases futures
-  // { label: 'Campagnes', path: '/admin/campaigns', icon: 'megaphone' },
   // { label: 'Parametres', path: '/admin/settings', icon: 'settings' },
 ]
 
