@@ -77,7 +77,7 @@ export default function AdminCustomerNew() {
     // Nettoyer le numero : garder uniquement les chiffres
     const cleanPhone = result.phone.replace(/[^\d]/g, '')
     const text = encodeURIComponent(
-      `Bonjour ! Voici votre carte de fidelite Chez Senan :\n${result.link}`
+      `Bonjour ! Voici votre carte de fidelite CHEZ SENA :\n${result.link}`
     )
     window.open(`https://wa.me/${cleanPhone}?text=${text}`, '_blank')
   }

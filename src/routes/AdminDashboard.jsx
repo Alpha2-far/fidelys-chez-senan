@@ -92,7 +92,7 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-3">
               <img src="/pwa-192x192.png" alt="Logo" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
               <div>
-                <p className="font-semibold text-gray-900 text-sm">CHEZ SENAN</p>
+                <p className="font-semibold text-gray-900 text-sm">CHEZ SENA</p>
                 <p className="text-xs text-gray-500">Administration</p>
               </div>
             </div>

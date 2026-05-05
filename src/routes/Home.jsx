@@ -28,7 +28,7 @@ export default function Home() {
         {/* Title */}
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
           Fidelys{' '}
-          <span className="text-primary-500">Chez Senan</span>
+          <span className="text-primary-500">CHEZ SENA</span>
         </h1>
 
         {/* Subtitle */}

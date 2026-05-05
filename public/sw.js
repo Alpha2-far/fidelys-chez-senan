@@ -8,7 +8,7 @@ self.addEventListener('push', function(event) {
     data = { title: 'Fidélys', body: event.data.text() };
   }
 
-  const title = data.title || 'Fidélys Chez Sénan';
+  const title = data.title || 'Fidélys CHEZ SENA';
   const options = {
     body: data.body || 'Vous avez une nouvelle notification.',
     icon: '/icon-192x192.png',
