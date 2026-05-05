@@ -281,22 +281,22 @@ Validation totale d'un bon : status = used. Validation partielle : status = part
 
 ### Pré-requis à demander
 
-- [ ] Générer une paire de clés VAPID (commande `npx web-push generate-vapid-keys`)
-- [ ] L'utilisateur stocke la VAPID public dans VITE_VAPID_PUBLIC_KEY (env Vercel)
-- [ ] L'utilisateur stocke la VAPID private dans les secrets Supabase Edge Functions
+- [x] Générer une paire de clés VAPID (commande `npx web-push generate-vapid-keys`)
+- [x] L'utilisateur stocke la VAPID public dans VITE_VAPID_PUBLIC_KEY (env Vercel)
+- [x] L'utilisateur stocke la VAPID private dans les secrets Supabase Edge Functions
 
 ### Tâches côté client
 
-- [ ] Créer `src/lib/push.js` : helpers pour subscribe, get permission, save subscription en DB
-- [ ] Sur la carte client, déclencher la demande de permission au premier chargement
-- [ ] Si accordée : créer un PushSubscription, l'enregistrer dans `customers.push_subscription`
-- [ ] Créer `public/sw.js` (service worker custom ou via vite-plugin-pwa) qui gère l'événement `push` et affiche la notification
+- [x] Créer `src/lib/push.js` : helpers pour subscribe, get permission, save subscription en DB
+- [x] Sur la carte client, déclencher la demande de permission au premier chargement
+- [x] Si accordée : créer un PushSubscription, l'enregistrer dans `customers.push_subscription`
+- [x] Créer `public/sw.js` (service worker custom ou via vite-plugin-pwa) qui gère l'événement `push` et affiche la notification
 
 ### Tâches côté serveur
 
-- [ ] Modifier `credit-purchase` pour envoyer les push après crédit (achat + bon généré le cas échéant)
-- [ ] Utiliser la lib web-push compatible Deno (ou implémenter manuellement la signature VAPID)
-- [ ] Logger chaque envoi dans notification_log
+- [x] Modifier `credit-purchase` pour envoyer les push après crédit (achat + bon généré le cas échéant)
+- [x] Utiliser la lib web-push compatible Deno (ou implémenter manuellement la signature VAPID)
+- [x] Logger chaque envoi dans notification_log
 
 ### Critère de validation
 

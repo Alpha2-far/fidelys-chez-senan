@@ -206,6 +206,8 @@ function RewardsPage({ vouchers, onBack }) {
   )
 }
 
+import { requestNotificationPermission, subscribeToPushNotifications } from '../lib/push'
+
 // ========== MAIN ==========
 export default function ClientCard() {
   const { accessToken } = useParams()
@@ -222,7 +224,7 @@ export default function ClientCard() {
 
   const load = useCallback(async () => {
     if (!accessToken) return
-    const { data: c, error } = await supabase.from('customers').select('id, name, phone, total_spent, shop_id, created_at').eq('access_token', accessToken).single()
+    const { data: c, error } = await supabase.from('customers').select('id, name, phone, total_spent, shop_id, created_at, push_subscription').eq('access_token', accessToken).single()
     if (error || !c) { setNotFound(true); setLoading(false); return }
     setCustomer(c)
     const [s, r, v, t] = await Promise.all([
@@ -236,6 +238,15 @@ export default function ClientCard() {
     if (v.data) setVouchers(v.data)
     if (t.data) setTransactions(t.data)
     setLoading(false)
+
+    // Request push notifications
+    setTimeout(async () => {
+      const granted = await requestNotificationPermission()
+      if (granted && !c.push_subscription) {
+        await subscribeToPushNotifications(c.id)
+      }
+    }, 2000)
+
   }, [accessToken])
 
   useEffect(() => { load() }, [load])

@@ -106,19 +106,10 @@ Deno.serve(async (req: Request) => {
         let code = generateCode();
         let isUnique = false;
         
-        // Ensure code uniqueness
         while (!isUnique) {
-          const { data: existing } = await supabaseClient
-            .from('vouchers')
-            .select('id')
-            .eq('code', code)
-            .maybeSingle();
-            
-          if (!existing) {
-            isUnique = true;
-          } else {
-            code = generateCode();
-          }
+          const { data: existing } = await supabaseClient.from('vouchers').select('id').eq('code', code).maybeSingle();
+          if (!existing) isUnique = true;
+          else code = generateCode();
         }
 
         const milestone = (oldMilestones + i + 1) * threshold;
@@ -134,14 +125,57 @@ Deno.serve(async (req: Request) => {
           milestone: milestone
         };
 
-        const { data: insertedVoucher, error: voucherError } = await supabaseClient
-          .from('vouchers')
-          .insert(newVoucher)
-          .select()
-          .single();
-
+        const { data: insertedVoucher, error: voucherError } = await supabaseClient.from('vouchers').insert(newVoucher).select().single();
         if (voucherError) throw voucherError;
         if (insertedVoucher) newVouchers.push(insertedVoucher);
+      }
+    }
+
+    // 6. Send push notifications
+    const { data: customerData } = await supabaseClient.from('customers').select('push_subscription').eq('id', customer_id).single();
+    
+    if (customerData && customerData.push_subscription) {
+      const vapidPublic = Deno.env.get('VAPID_PUBLIC_KEY');
+      const vapidPrivate = Deno.env.get('VAPID_PRIVATE_KEY');
+      
+      if (vapidPublic && vapidPrivate) {
+        try {
+          const webpush = (await import("npm:web-push@3.6.7")).default;
+          webpush.setVapidDetails('mailto:contact@chezsenan.com', vapidPublic, vapidPrivate);
+
+          const notifyPromises = [];
+
+          // Notification for purchase
+          const payloadPurchase = JSON.stringify({
+            title: 'Achat crédité !',
+            body: `Votre achat de ${amount} FCFA a été enregistré. Nouveau solde : ${newTotal} FCFA.`,
+            url: `/carte/${customer.access_token}`
+          });
+          notifyPromises.push(webpush.sendNotification(customerData.push_subscription, payloadPurchase));
+
+          // Notification for vouchers
+          for (const v of newVouchers) {
+            const payloadVoucher = JSON.stringify({
+              title: 'Nouveau bon de réduction !',
+              body: `Félicitations ! Vous avez gagné un bon de ${v.amount_total} FCFA.`,
+              url: `/carte/${customer.access_token}`
+            });
+            notifyPromises.push(webpush.sendNotification(customerData.push_subscription, payloadVoucher));
+          }
+
+          await Promise.allSettled(notifyPromises);
+          
+          // Log notifications (simplified)
+          await supabaseClient.from('notification_log').insert({
+            customer_id,
+            shop_id,
+            title: 'Notifications automatiques d\'achat',
+            body: 'Push envoyé pour l\'achat et les bons potentiels',
+            status: 'sent'
+          });
+        } catch (e) {
+          console.error('Push error:', e);
+        }
       }
     }
 
