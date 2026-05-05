@@ -16,6 +16,7 @@ export default function AdminPurchase() {
   
   // Purchase state
   const [amount, setAmount] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successResult, setSuccessResult] = useState(null);
   const [error, setError] = useState('');
@@ -109,10 +110,6 @@ export default function AdminPurchase() {
     e.preventDefault();
     if (!customer || !amount || isNaN(amount) || parseInt(amount) <= 0) return;
 
-    if (!window.confirm(`Confirmez-vous l'achat de ${fmt(amount)} FCFA pour ${customer.name} ?`)) {
-      return;
-    }
-
     setIsSubmitting(true);
     setError('');
     setSuccessResult(null);
@@ -130,9 +127,9 @@ export default function AdminPurchase() {
       if (data.error) throw new Error(data.error);
 
       setSuccessResult(data);
-      // Update local customer state
       setCustomer({ ...customer, total_spent: data.new_total_spent });
       setAmount('');
+      setShowConfirm(false);
     } catch (err) {
       setError(err.message || 'Une erreur est survenue lors de l\'enregistrement.');
     } finally {
@@ -145,6 +142,7 @@ export default function AdminPurchase() {
     setSuccessResult(null);
     setPhoneSearch('');
     setAmount('');
+    setShowConfirm(false);
   };
 
   const fmt = (num) => new Intl.NumberFormat('fr-FR').format(num || 0);
@@ -277,14 +275,40 @@ export default function AdminPurchase() {
             />
             
             {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
-            
-            <button
-              type="submit"
-              disabled={isSubmitting || !amount}
-              className="mt-6 w-full py-4 bg-gray-900 hover:bg-black text-white font-bold rounded-xl disabled:opacity-50 transition-colors text-lg"
-            >
-              {isSubmitting ? 'Enregistrement...' : 'Valider l\'achat'}
-            </button>
+
+            {!showConfirm ? (
+              <button
+                type="button"
+                onClick={() => { if (amount && parseInt(amount) > 0) setShowConfirm(true) }}
+                disabled={!amount}
+                className="mt-6 w-full py-4 bg-gray-900 hover:bg-black text-white font-bold rounded-xl disabled:opacity-50 transition-colors text-lg"
+              >
+                Valider l'achat
+              </button>
+            ) : (
+              <div className="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <p className="text-sm font-semibold text-amber-900 mb-1">Confirmer l'enregistrement ?</p>
+                <p className="text-sm text-amber-800 mb-4">
+                  <span className="font-bold">{fmt(amount)} FCFA</span> pour <span className="font-bold">{customer.name}</span>
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-xl disabled:opacity-50 transition-colors"
+                  >
+                    {isSubmitting ? 'Enregistrement...' : 'Confirmer'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(false)}
+                    className="flex-1 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            )}
           </form>
 
           {successResult && (

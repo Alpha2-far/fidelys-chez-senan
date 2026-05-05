@@ -34,6 +34,10 @@ export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [recentCustomers, setRecentCustomers] = useState([])
   const [loadingCustomers, setLoadingCustomers] = useState(true)
+  const [copiedId, setCopiedId] = useState(null)
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
+  const [deleteError, setDeleteError] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -69,23 +73,39 @@ export default function AdminDashboard() {
     loadCustomers()
   }, [loadCustomers])
 
-  const handleDeleteCustomer = async (id, name) => {
-    if (!window.confirm(`Êtes-vous sûr de vouloir supprimer le client ${name} ? Toutes ses données seront effacées (historique, bons). Cette action est irréversible.`)) {
-      return
-    }
-    
+  const handleCopyLink = async (id, accessToken) => {
+    const link = `${window.location.origin}/carte/${accessToken}`
     try {
+      await navigator.clipboard.writeText(link)
+    } catch {
+      const ta = document.createElement('textarea')
+      ta.value = link
+      ta.style.position = 'fixed'
+      ta.style.left = '-9999px'
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      ta.remove()
+    }
+    setCopiedId(id)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
+
+  const handleDeleteCustomer = async (id) => {
+    setDeletingId(id)
+    setDeleteError(null)
+    try {
+      await supabase.from('notification_log').delete().eq('customer_id', id)
+      await supabase.from('transactions').delete().eq('customer_id', id)
+      await supabase.from('vouchers').delete().eq('customer_id', id)
       const { error } = await supabase.from('customers').delete().eq('id', id)
-      if (error) {
-        console.error("Erreur détaillée lors de la suppression:", error)
-        alert(`Erreur lors de la suppression: ${error.message || error.details || JSON.stringify(error)}`)
-      } else {
-        loadCustomers()
-        alert('Client supprimé avec succès.')
-      }
+      if (error) throw error
+      setDeleteConfirmId(null)
+      loadCustomers()
     } catch (err) {
-      console.error("Erreur inattendue:", err)
-      alert(`Erreur inattendue: ${err.message}`)
+      setDeleteError(err.message || 'Erreur lors de la suppression.')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -244,68 +264,72 @@ export default function AdminDashboard() {
                 ) : (
                   <ul className="divide-y divide-gray-100">
                     {recentCustomers.map((c) => (
-                      <li key={c.id} className="px-6 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-9 h-9 rounded-full bg-primary-50 flex items-center justify-center shrink-0">
-                            <span className="text-sm font-semibold text-primary-600">
-                              {c.name.charAt(0).toUpperCase()}
+                      <li key={c.id}>
+                        <div className="px-6 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-9 h-9 rounded-full bg-primary-50 flex items-center justify-center shrink-0">
+                              <span className="text-sm font-semibold text-primary-600">
+                                {c.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate">{c.name}</p>
+                              <p className="text-xs text-gray-500">{c.phone}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0 ml-3">
+                            <span className="text-xs text-gray-400 hidden sm:block">
+                              {new Date(c.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                             </span>
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">{c.name}</p>
-                            <p className="text-xs text-gray-500">{c.phone}</p>
+                            <button
+                              onClick={() => handleCopyLink(c.id, c.access_token)}
+                              title="Copier le lien de la carte"
+                              className="p-1.5 rounded-lg transition-all text-gray-400 hover:text-primary-600 hover:bg-primary-50"
+                            >
+                              {copiedId === c.id ? (
+                                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                              ) : (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                                </svg>
+                              )}
+                            </button>
+                            <button
+                              onClick={() => { setDeleteConfirmId(c.id); setDeleteError(null) }}
+                              title="Supprimer le client"
+                              className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                              </svg>
+                            </button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0 ml-3">
-                          <span className="text-xs text-gray-400 hidden sm:block">
-                            {new Date(c.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-                          </span>
-                          <button
-                            onClick={async () => {
-                              const link = `${window.location.origin}/carte/${c.access_token}`
-                              if (navigator.clipboard && window.isSecureContext) {
-                                try {
-                                  await navigator.clipboard.writeText(link)
-                                  alert('Lien copié dans le presse-papier !')
-                                  return
-                                } catch (err) {
-                                  console.error('Failed to copy', err)
-                                }
-                              }
-                              // Fallback
-                              try {
-                                const textArea = document.createElement("textarea");
-                                textArea.value = link;
-                                textArea.style.position = "fixed";
-                                textArea.style.left = "-9999px";
-                                document.body.appendChild(textArea);
-                                textArea.focus();
-                                textArea.select();
-                                document.execCommand('copy');
-                                textArea.remove();
-                                alert('Lien copié dans le presse-papier !')
-                              } catch (e) {
-                                console.error('Fallback copy failed', e)
-                                alert(`Copiez manuellement ce lien : ${link}`)
-                              }
-                            }}
-                            title="Copier le lien de la carte"
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-50 transition-all"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => handleDeleteCustomer(c.id, c.name)}
-                            title="Supprimer le client"
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
-                          </button>
-                        </div>
+                        {deleteConfirmId === c.id && (
+                          <div className="px-6 pb-4 bg-red-50 border-t border-red-100">
+                            <p className="text-sm text-red-800 font-medium pt-3 mb-2">
+                              Supprimer {c.name} ? Toutes ses données seront effacées.
+                            </p>
+                            {deleteError && <p className="text-xs text-red-600 mb-2">{deleteError}</p>}
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleDeleteCustomer(c.id)}
+                                disabled={deletingId === c.id}
+                                className="px-3 py-1.5 text-xs font-semibold bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                              >
+                                {deletingId === c.id ? 'Suppression...' : 'Confirmer la suppression'}
+                              </button>
+                              <button
+                                onClick={() => { setDeleteConfirmId(null); setDeleteError(null) }}
+                                className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                Annuler
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </li>
                     ))}
                   </ul>

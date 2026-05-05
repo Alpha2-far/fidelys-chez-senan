@@ -1,4 +1,16 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 export default function Home() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('fidelys_access_token')
+    if (savedToken) {
+      navigate(`/carte/${savedToken}`, { replace: true })
+    }
+  }, [navigate])
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-100">
       {/* Decorative background circles */}

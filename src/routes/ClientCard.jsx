@@ -242,6 +242,8 @@ export default function ClientCard() {
     if (t.data) setTransactions(t.data)
     setLoading(false)
 
+    localStorage.setItem('fidelys_access_token', accessToken)
+
     // Request push notifications
     setTimeout(async () => {
       const granted = await requestNotificationPermission()
